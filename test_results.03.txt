@@ -1,0 +1,12 @@
+Time to insert all into reserved ska hashset: 41039000/0.041039
+Time to insert all into reserved khash hashset: 52519000/0.052519
+khash is 0.781412 as fast as ska for reserved insertions
+Time to find present keys in ska hashset: 18663000/0.018663
+Time to find present keys in khash hashset: 16087000/0.016087
+khash is 1.160129 as fast as ska for correct lookups
+Time to look for absent keys in khash hashset: 16377000/0.016377
+Time to look for absent keys in ska hashset: 16314000/0.016314
+khash is 0.996153 as fast as ska for missing lookups
+Time to insert all into unreserved khash hashset: 63744000/0.063744
+Time to insert all into unreserved ska hashset: 72395000/0.072395
+khash is 1.135715 as fast as ska for unreserved inserts
