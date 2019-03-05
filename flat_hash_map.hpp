@@ -12,6 +12,7 @@
 #include <iterator>
 #include <utility>
 #include <type_traits>
+#include <climits>
 
 #ifdef _MSC_VER
 #define SKA_NOINLINE(...) __declspec(noinline) __VA_ARGS__
@@ -205,8 +206,38 @@ struct sherwood_v3_entry
     union { T value; };
 };
 
+
+#if defined(__GNUC__) || defined(__clang__) || defined(BUILTIN_CLZ_AVAILABLE)
+#define CLZ_AVAILABLE 1
+namespace clz {
+static inline auto clz(unsigned long long x) {
+    return __builtin_clzll(x);
+}
+static inline auto clz(long long x) {
+    return __builtin_clzll(x);
+}
+static inline auto clz(unsigned long x) {
+    return __builtin_clzl(x);
+}
+static inline auto clz(long x) {
+    return __builtin_clzl(x);
+}
+static inline auto clz(unsigned x) {
+    return __builtin_clz(x);
+}
+static inline auto clz(int x) {
+    return __builtin_clz(x);
+}
+} // namespace clz
+#else
+#define CLZ_AVAILABLE 0
+#endif
+
 inline int8_t log2(size_t value)
 {
+#if CLZ_AVAILABLE
+    return value ? int8_t(sizeof(size_t) * CHAR_BIT - clz::clz(value) - 1): int8_t(0);
+#else
     static constexpr int8_t table[64] =
     {
         63,  0, 58,  1, 59, 47, 53,  2,
@@ -225,6 +256,7 @@ inline int8_t log2(size_t value)
     value |= value >> 16;
     value |= value >> 32;
     return table[((value - (value >> 1)) * 0x07EDD5E59A4E28C2) >> 58];
+#endif
 }
 
 template<typename T, bool>
